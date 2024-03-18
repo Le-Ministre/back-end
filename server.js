@@ -6,7 +6,7 @@ import bodyParser from "body-parser";
 import bcrypt from "bcrypt";
 import cors from "cors";
 const corsOptions = {
-  origin: ["http://localhost@ :3000", "http://localhost:3001, https://my-admin-jr9jidsex-le-ministres-projects.vercel.app/"],
+  origin: ["https://abdourahamane-portfolio.vercel.app/", "https://my-admin-khaki.vercel.app/, https://my-admin-jr9jidsex-le-ministres-projects.vercel.app/"],
 };
 const app = express();
 const port = 4000;
