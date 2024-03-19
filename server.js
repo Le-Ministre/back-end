@@ -4,23 +4,15 @@ import TaskModel from "./models/task.js";
 import UserModel from "./models/user.js";
 import bodyParser from "body-parser";
 import bcrypt from "bcrypt";
-// import cors from "cors";
-// const corsOptions = {
-//   origin: "https://my-admin-khaki.vercel.app/",
-//   credentials: true,
-// };
+import cors from "cors";
+const corsOptions = {
+  origin: ["https://my-admin-khaki.vercel.app","http://localhost:3000"],
+  credentials: true,
+};
 const app = express();
 const port = 4000;
 app.use(bodyParser());
-// app.use(cors(corsOptions));
-app.use((req, res, next) => {
-  res.setHeader("Access-Control-Allow-Origin", "https://my-admin-khaki.vercel.app/");
-  res.header(
-    "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content-Type, Accept"
-  );
-  next();
-});
+app.use(cors(corsOptions));
 app.get("/", (req, res) => {
   res.send("Hello World!");
 });
