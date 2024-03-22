@@ -10,6 +10,10 @@ const taskSchema = new Schema({
     type: String,
     required: true,
   },
+  image: {
+    type: Object,
+    required: false
+  }
  
   // Définissez d'autres champs au besoin
 });

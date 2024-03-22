@@ -5,14 +5,18 @@ import UserModel from "./models/user.js";
 import bodyParser from "body-parser";
 import bcrypt from "bcrypt";
 import cors from "cors";
+import cloudinary from "./cloudinary.js";
+
 const corsOptions = {
-  origin: ["https://my-admin-khaki.vercel.app","http://localhost:3000"],
+  origin: ["https://my-admin-khaki.vercel.app", "http://localhost:3000"],
   credentials: true,
 };
 const app = express();
+app.use(express.json({ limit: "50mb" }));
 const port = 4000;
 app.use(bodyParser());
 app.use(cors(corsOptions));
+
 app.get("/", (req, res) => {
   res.send("Hello World!");
 });
@@ -76,9 +80,29 @@ app.post("/api/auth/login", async (req, res) => {
 // Créer un nouveau projet
 app.post("/api/create-task", async (req, res) => {
   try {
-    const newTask = new TaskModel(req.body);
-    await newTask.save();
-    res.status(201).json(newTask);
+    const { image } = req.body;
+
+    if (image !== "") {
+      await cloudinary.uploader.upload(image, {
+        folder: "TestTuto",
+        use_filename: true,
+      }, async (error, result) => {
+        if (result) {
+          const newTask = new TaskModel({...req.body, image:{url:result.url,public_id:result.public_id}});
+          res.status(201).json(newTask);
+          await newTask.save();
+          return;    
+        } else {
+          console.log(error);
+          return;
+        }
+      });
+    } else {
+      const newTask = new TaskModel({...req.body, image: null});
+      await newTask.save();
+      return;      
+    }
+
   } catch (error) {
     res.status(500).json({ error: "le serveuur a une erreur" });
   }
@@ -107,7 +131,7 @@ app.get("/api/send/getTache:id", async (req, res) => {
   }
 });
 
-// Modifier un projet 
+// Modifier un projet
 app.put("/api/tache/edite/:id", async (req, res) => {
   try {
     const updateTache = await TaskModel.findById(req.params.id, req.body, {
@@ -134,8 +158,6 @@ app.delete("/api/tache/delete/:id", async (req, res) => {
     res.status(500).json({ error: "le serveur a une erreur" });
   }
 });
-
-
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
