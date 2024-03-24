@@ -8,7 +8,7 @@ import cors from "cors";
 import cloudinary from "./cloudinary.js";
 
 const corsOptions = {
-  origin: ["https://my-admin-khaki.vercel.app", "http://localhost:3000"],
+  origin: ["https://my-admin-khaki.vercel.app", "https://abdourahamane-portfolio.vercel.app", "http://localhost:3001", "http://localhost:3000"],
   credentials: true,
 };
 const app = express();
@@ -114,7 +114,7 @@ app.get("/api/send/getTache", async (req, res) => {
     const tasks = await TaskModel.find();
     res.status(200).json(tasks);
   } catch (error) {
-    res.status(500).json({ error: "le serveur a une erreur" });
+    res.status(500).json({ error: "Oupss le serveur a une erreur" });
   }
 });
 
@@ -127,7 +127,7 @@ app.get("/api/send/getTache:id", async (req, res) => {
     }
     res.status(200).json(TaskModel);
   } catch (error) {
-    res.status(500).json({ error: "le serveur a une erreur" });
+    res.status(500).json({ error: "Sorry le serveur a une erreur" });
   }
 });
 
