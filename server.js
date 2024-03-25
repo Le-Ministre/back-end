@@ -36,8 +36,8 @@ app.post("/api/auth/signup", async (req, res) => {
     // Vérifier si l'utilisateur existe déjà
     const existingUser = await UserModel.findOne({ email });
     if (existingUser) {
-      return res.status(400).json({ error: "Merci pour votre inscription." });
-    }
+      return res.status(400).json({ message: "Merci pour votre inscription." });
+    }  
     // Hasher le mot de passe
     const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -45,6 +45,7 @@ app.post("/api/auth/signup", async (req, res) => {
     const newUser = new UserModel({
       email,
       password: hashedPassword,
+
     });
     // Enregistrer l'utilisateur dans la base de données
     await newUser.save();
@@ -132,11 +133,12 @@ app.get("/api/send/getTache:id", async (req, res) => {
 });
 
 // Modifier un projet
-app.put("/api/tache/edite/:id", async (req, res) => {
+app.put("/api/tache/edite/: id", async (req, res) => {
   try {
-    const updateTache = await TaskModel.findById(req.params.id, req.body, {
-      new: true,
-    });
+    const updateTache = await TaskModel.findByIdAndUpdate(req.params.id, {
+      ...req.body
+    })
+    console.log(req.body);
     if (!updateTache) {
       return res.status(500).json({ error: "tache non dispanible" });
     }
