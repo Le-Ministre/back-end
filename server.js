@@ -20,12 +20,7 @@ app.use(cors(corsOptions));
 app.get("/", (req, res) => {
   res.send("Hello World!");
 });
-// app.get("/users", async (req, res) => {
-//   const allUsers = await TaskModel.find()
 
-//   return res.send(allUsers);
-
-// });
 
 // inscription ici
 
@@ -120,27 +115,28 @@ app.get("/api/send/getTache", async (req, res) => {
 });
 
 // reccuper un seul projet via son id
-app.get("/api/send/getTache:id", async (req, res) => {
+app.get("/api/send/getTache/:id", async (req, res) => {
   try {
     const tasks = await TaskModel.findById(req.params.id);
-    if (!deleteTask) {
+    if (!tasks) {
       return res.status(404).json({ error: "tache non dispanible" });
     }
-    res.status(200).json(TaskModel);
+    // console.log(tasks);
+    res.status(200).json(tasks);
   } catch (error) {
     res.status(500).json({ error: "Sorry le serveur a une erreur" });
   }
 });
 
 // Modifier un projet
-app.put("/api/tache/edite/: id", async (req, res) => {
+app.patch("/api/tache/edite/:id", async (req, res) => {
   try {
     const updateTache = await TaskModel.findByIdAndUpdate(req.params.id, {
       ...req.body
     })
-    console.log(req.body);
+    
     if (!updateTache) {
-      return res.status(500).json({ error: "tache non dispanible" });
+      return res.status(500).json({ error: "la mise a jour de la tache a echoué" });
     }
     res.status(200).json(updateTache);
   } catch (error) {
