@@ -7,7 +7,7 @@ async function dbConnect() {
 
   
   mongoose
-    .connect("mongodb+srv://portfolio:leportfolio@cluster0.wbpponr.mongodb.net/monPortfolio?retryWrites=true&w=majority&appName=Cluster0", {
+    .connect(MONGODB_URI, {
     })
     .then(() => console.log(" MongoDB connecté"))
     .catch((err) => console.log(err));
