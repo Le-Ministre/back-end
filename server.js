@@ -1,5 +1,5 @@
 import express from "express";
-import dotenv from "dotenv"
+import dotenv from "dotenv";
 import dbConnect from "./dbConnect.js";
 import TaskModel from "./models/task.js";
 import UserModel from "./models/user.js";
@@ -7,10 +7,15 @@ import bodyParser from "body-parser";
 import bcrypt from "bcrypt";
 import cors from "cors";
 import cloudinary from "./cloudinary.js";
-dotenv.config()
+dotenv.config();
 
 const corsOptions = {
-  origin: ["https://my-admin-khaki.vercel.app", "https://abdourahamane-portfolio.vercel.app", "http://localhost:3001", "http://localhost:3000"],
+  origin: [
+    "https://my-admin-khaki.vercel.app",
+    "https://abdourahamane-portfolio.vercel.app",
+    "http://localhost:3001",
+    "http://localhost:3000",
+  ],
   credentials: true,
 };
 const app = express();
@@ -23,7 +28,6 @@ app.get("/", (req, res) => {
   res.send("Hello World!");
 });
 
-
 // inscription ici
 
 app.post("/api/auth/signup", async (req, res) => {
@@ -34,7 +38,7 @@ app.post("/api/auth/signup", async (req, res) => {
     const existingUser = await UserModel.findOne({ email });
     if (existingUser) {
       return res.status(400).json({ message: "Merci pour votre inscription." });
-    }  
+    }
     // Hasher le mot de passe
     const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -42,7 +46,6 @@ app.post("/api/auth/signup", async (req, res) => {
     const newUser = new UserModel({
       email,
       password: hashedPassword,
-
     });
     // Enregistrer l'utilisateur dans la base de données
     await newUser.save();
@@ -80,27 +83,65 @@ app.post("/api/create-task", async (req, res) => {
   try {
     const { image } = req.body;
 
-    if (image !== "") {
-      await cloudinary.uploader.upload(image, {
+    console.log(req.body)
+    res.send('hehe');
+    console.log(image)
+
+    if (image === undefined) {
+      const newTask = new TaskModel({ ...req.body, image: null });
+      await newTask.save();
+      return;
+    }
+
+    await cloudinary.uploader.upload(
+      image,
+      {
         folder: "TestTuto",
         use_filename: true,
-      }, async (error, result) => {
+      },
+      async (error, result) => {
         if (result) {
-          const newTask = new TaskModel({...req.body, image:{url:result.url,public_id:result.public_id}});
+          const newTask = new TaskModel({
+            ...req.body,
+            image: { url: result.url, public_id: result.public_id },
+          });
           res.status(201).json(newTask);
           await newTask.save();
-          return;    
+          return;
         } else {
           console.log(error);
           return;
         }
-      });
-    } else {
-      const newTask = new TaskModel({...req.body, image: null});
-      await newTask.save();
-      return;      
-    }
+      }
+    );
 
+    // if (image !== "") {
+      // await cloudinary.uploader.upload(
+      //   image,
+      //   {
+      //     folder: "TestTuto",
+      //     use_filename: true,
+      //   },
+      //   async (error, result) => {
+      //     if (result) {
+      //       const newTask = new TaskModel({
+      //         ...req.body,
+      //         image: { url: result.url, public_id: result.public_id },
+      //       });
+      //       res.status(201).json(newTask);
+      //       await newTask.save();
+      //       return;
+      //     } else {
+      //       console.log(error);
+      //       return;
+      //     }
+      //   }
+      // );
+    // } else {
+      // const newTask = new TaskModel({ ...req.body, image: null });
+      // await newTask.save();
+      // return;
+    // }
   } catch (error) {
     res.status(500).json({ error: "le serveuur a une erreur" });
   }
@@ -134,11 +175,13 @@ app.get("/api/send/getTache/:id", async (req, res) => {
 app.patch("/api/tache/edite/:id", async (req, res) => {
   try {
     const updateTache = await TaskModel.findByIdAndUpdate(req.params.id, {
-      ...req.body
-    })
-    
+      ...req.body,
+    });
+
     if (!updateTache) {
-      return res.status(500).json({ error: "la mise a jour de la tache a echoué" });
+      return res
+        .status(500)
+        .json({ error: "la mise a jour de la tache a echoué" });
     }
     res.status(200).json(updateTache);
   } catch (error) {
