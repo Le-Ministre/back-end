@@ -1,4 +1,5 @@
 import express from "express";
+import dotenv from "dotenv"
 import dbConnect from "./dbConnect.js";
 import TaskModel from "./models/task.js";
 import UserModel from "./models/user.js";
@@ -6,6 +7,7 @@ import bodyParser from "body-parser";
 import bcrypt from "bcrypt";
 import cors from "cors";
 import cloudinary from "./cloudinary.js";
+dotenv.config()
 
 const corsOptions = {
   origin: ["https://my-admin-khaki.vercel.app", "https://abdourahamane-portfolio.vercel.app", "http://localhost:3001", "http://localhost:3000"],
