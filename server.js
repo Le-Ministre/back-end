@@ -202,7 +202,9 @@ app.delete("/api/tache/delete/:id", async (req, res) => {
   }
 });
 
+dbConnect();
+
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
 });
-dbConnect();
+
