@@ -90,7 +90,7 @@ app.post("/api/create-task", async (req, res) => {
     if (image === undefined) {
       const newTask = new TaskModel({ ...req.body, image: null });
       await newTask.save();
-      return;
+      res.status(201).json(newTask);
     }
 
     await cloudinary.uploader.upload(
@@ -104,10 +104,10 @@ app.post("/api/create-task", async (req, res) => {
           const newTask = new TaskModel({
             ...req.body,
             image: { url: result.url, public_id: result.public_id },
-          });
-          res.status(201).json(newTask);
+          }); 
           await newTask.save();
-          return;
+          res.status(201).json(newTask);
+     
         } else {
           console.log(error);
           return;
@@ -115,33 +115,7 @@ app.post("/api/create-task", async (req, res) => {
       }
     );
 
-    // if (image !== "") {
-      // await cloudinary.uploader.upload(
-      //   image,
-      //   {
-      //     folder: "TestTuto",
-      //     use_filename: true,
-      //   },
-      //   async (error, result) => {
-      //     if (result) {
-      //       const newTask = new TaskModel({
-      //         ...req.body,
-      //         image: { url: result.url, public_id: result.public_id },
-      //       });
-      //       res.status(201).json(newTask);
-      //       await newTask.save();
-      //       return;
-      //     } else {
-      //       console.log(error);
-      //       return;
-      //     }
-      //   }
-      // );
-    // } else {
-      // const newTask = new TaskModel({ ...req.body, image: null });
-      // await newTask.save();
-      // return;
-    // }
+   
   } catch (error) {
     res.status(500).json({ error: "le serveuur a une erreur" });
   }
