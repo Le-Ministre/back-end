@@ -80,6 +80,7 @@ app.post("/api/auth/login", async (req, res) => {
 
 // Créer un nouveau projet
 app.post("/api/create-task", async (req, res) => {
+  console.log(req);
   try {
     const { image } = req.body;
 
@@ -147,6 +148,7 @@ app.get("/api/send/getTache/:id", async (req, res) => {
 
 // Modifier un projet
 app.patch("/api/tache/edite/:id", async (req, res) => {
+  console.log('hehe');
   try {
     const updateTache = await TaskModel.findByIdAndUpdate(req.params.id, {
       ...req.body,
